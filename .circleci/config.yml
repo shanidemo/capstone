@@ -97,5 +97,5 @@ workflows:
       - test-eks-cluster:
           cluster-name: capstone
           requires: [create-eks-cluster]
-     - delete-capston-cluster:
-         requires: [test-eks-cluster]
+      - delete-capston-cluster:
+          requires: [test-eks-cluster]
