@@ -74,9 +74,9 @@ jobs:
           nodes-max: 2
           ssh-access: false
           ssh-public-key: 'ohio'
-      - destroy-cluster:
-          cluster-name: shiva-capstone
-          when: on_fail
+      # - destroy-cluster:
+      #     cluster-name: shiva-capstone
+      #     when: on_fail
 
   test-eks-cluster:
     executor: aws-eks/python3
