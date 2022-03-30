@@ -154,6 +154,7 @@ jobs:
       - run:
           command: |
             pwd
+            cat /etc/os-release
             ls -lha
             ./hello.sh
             ./BlueGreen.sh
