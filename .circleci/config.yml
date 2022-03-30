@@ -152,6 +152,7 @@ jobs:
           command: |
             pwd
             ls -lha
+            ./hello.sh
 workflows:
   default:
     jobs:
