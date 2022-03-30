@@ -86,16 +86,17 @@ jobs:
             $SUDO mv eksctl_download/eksctl /usr/local/bin/
             rmdir eksctl_download
       - aws-eks/delete-cluster:
-          cluster-name: my-capstone
+          cluster-name: << parameters.cluster-name >>
           aws-region: us-east-2
           wait: true
 workflows:
   default:
     jobs:
       - create-eks-cluster:
-          cluster-name: my-capstone
+          cluster-name: shiva-capstone
       - test-eks-cluster:
-          cluster-name: my-capstone
+          cluster-name: shiva-capstone
           requires: [create-eks-cluster]
       - delete-capston-cluster:
+          cluster-name: shiva-capstone
           requires: [test-eks-cluster]
