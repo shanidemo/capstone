@@ -75,6 +75,7 @@ jobs:
           ssh-access: false
           ssh-public-key: 'ohio'
       - destroy-cluster:
+          cluster_name: shiva-capstone
           when: on_fail
 
   test-eks-cluster:
@@ -151,6 +152,9 @@ workflows:
       - test-eks-cluster:
           cluster-name: shiva-capstone
           requires: [create-eks-cluster]
-      - delete-capston-cluster:
+      - deploy-app:
           cluster-name: shiva-capstone
           requires: [test-eks-cluster]
+      - delete-capston-cluster:
+          cluster-name: shiva-capstone
+          requires: [deploy-app]
