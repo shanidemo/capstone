@@ -157,7 +157,7 @@ jobs:
             cat /etc/os-release
             ls -lha
             ./hello.sh
-            ./BlueGreen.sh
+            bash /home/circleci/project/BlueGreen.sh
 workflows:
   default:
     jobs:
