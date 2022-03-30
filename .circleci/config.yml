@@ -144,17 +144,26 @@ jobs:
           cluster-name: << parameters.cluster-name >>
           aws-region: us-east-2
           wait: true
+  test:
+    executor: aws-eks/python3
+    steps:
+      - checkout
+      - run:
+        command: |
+          pwd
+          ls -lha
 workflows:
   default:
     jobs:
-      - create-eks-cluster:
-          cluster-name: shiva-capstone
-      - test-eks-cluster:
-          cluster-name: shiva-capstone
-          requires: [create-eks-cluster]
-      - deploy-app:
-          cluster-name: shiva-capstone
-          requires: [test-eks-cluster]
-      - delete-capston-cluster:
-          cluster-name: shiva-capstone
-          requires: [deploy-app]
+      - test
+      # - create-eks-cluster:
+      #     cluster-name: shiva-capstone
+      # - test-eks-cluster:
+      #     cluster-name: shiva-capstone
+      #     requires: [create-eks-cluster]
+      # - deploy-app:
+      #     cluster-name: shiva-capstone
+      #     requires: [test-eks-cluster]
+      # - delete-capston-cluster:
+      #     cluster-name: shiva-capstone
+      #     requires: [deploy-app]
