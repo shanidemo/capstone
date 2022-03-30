@@ -110,7 +110,7 @@ jobs:
             cat /etc/os-release
             ./BlueGreen.sh
             kubectl get svc service-loadbalancer
-            sleep 180
+            sleep 200
   delete-capston-cluster:
     executor: aws-eks/python3
     parameters:
@@ -156,15 +156,15 @@ jobs:
 workflows:
   default:
     jobs:
-      - test
-      # - create-eks-cluster:
-      #     cluster-name: shiva-capstone
-      # - test-eks-cluster:
-      #     cluster-name: shiva-capstone
-      #     requires: [create-eks-cluster]
-      # - deploy-app:
-      #     cluster-name: shiva-capstone
-      #     requires: [test-eks-cluster]
-      # - delete-capston-cluster:
-      #     cluster-name: shiva-capstone
-      #     requires: [deploy-app]
+      # - test
+      - create-eks-cluster:
+          cluster-name: shiva-capstone
+      - test-eks-cluster:
+          cluster-name: shiva-capstone
+          requires: [create-eks-cluster]
+      - deploy-app:
+          cluster-name: shiva-capstone
+          requires: [test-eks-cluster]
+      - delete-capston-cluster:
+          cluster-name: shiva-capstone
+          requires: [deploy-app]
