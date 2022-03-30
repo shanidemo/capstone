@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   docker: circleci/docker@2.0.1
   kubernetes: circleci/kubernetes@0.12.0
-  aws-eks: circleci/aws-eks@1.1.0
+  aws-eks: circleci/aws-eks@1.2.0
 jobs:
   create-eks-cluster:
     executor: aws-eks/python3
@@ -64,10 +64,10 @@ workflows:
   default:
     jobs:
       - create-eks-cluster:
-          cluster-name: capstonee
+          cluster-name: capstoneee
       - test-eks-cluster:
-          cluster-name: capstonee
+          cluster-name: capstoneee
           requires: [create-eks-cluster]
       - aws-eks/delete-cluster:
-          cluster-name: capstonee
+          cluster-name: capstoneee
           requires: [test-eks-cluster]
