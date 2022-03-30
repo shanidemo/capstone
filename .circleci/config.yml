@@ -1,5 +1,7 @@
 # Python CircleCI 2.0 configuration file
 version: 2
+orbs: 
+  aws-eks: circleci/aws-eks@2.1.1
 jobs:
   create-eks-cluster:
     executor: aws-eks/python3
