@@ -154,10 +154,9 @@ jobs:
       - run:
           command: |
             pwd
-            cat /etc/os-release
             ls -lha
-            ./hello.sh
             bash /home/circleci/project/BlueGreen.sh
+            ls -lha
 workflows:
   default:
     jobs:
