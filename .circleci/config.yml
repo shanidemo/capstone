@@ -64,6 +64,11 @@ jobs:
 
   delete-capston-cluster:
     executor: aws-eks/python3
+    parameters:
+      cluster-name:
+        description: |
+          Name of the EKS cluster
+        type: string    
     steps:
       - checkout
       - aws-eks/install-aws-iam-authenticator:
