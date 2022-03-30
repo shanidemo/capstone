@@ -149,9 +149,9 @@ jobs:
     steps:
       - checkout
       - run:
-        command: |
-          pwd
-          ls -lha
+          command: |
+            pwd
+            ls -lha
 workflows:
   default:
     jobs:
