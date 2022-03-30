@@ -8,7 +8,7 @@ commands:
   destroy-cluster:
     description: Destroy EKS cluster
     parameters:
-      cluster_name:
+      cluster-name:
         type: string
     steps:
       - checkout
