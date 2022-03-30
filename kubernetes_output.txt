@@ -1,0 +1,5 @@
+deployment.apps/prediction created
+NAME                          READY   STATUS              RESTARTS   AGE
+prediction-7dc75dc99b-5bjk4   0/1     ContainerCreating   0          1s
+Forwarding from 0.0.0.0:5000 -> 80
+Handling connection for 5000

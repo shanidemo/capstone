@@ -1,0 +1,11 @@
+---
+
+- name: deploy app
+  hosts: app
+  user: ubuntu
+  become: true
+  become_method: sudo
+  become_user: root
+
+  roles:
+    - deploy
