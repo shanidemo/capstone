@@ -61,10 +61,10 @@ workflows:
   default:
     jobs:
       - create-eks-cluster:
-          cluster-name: eks-capstone-project
+          cluster-name: capstone
       - test-eks-cluster:
-          cluster-name: eks-capstone-project
+          cluster-name: capstone
           requires: [create-eks-cluster]
       - aws-eks/delete-cluster:
-          cluster-name: eks-capstone-project
+          cluster-name: capstone
           requires: [test-eks-cluster]
