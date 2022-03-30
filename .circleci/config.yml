@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   docker: circleci/docker@2.0.1
   kubernetes: circleci/kubernetes@0.12.0
-  aws-eks: circleci/aws-eks@2.1.0
+  aws-eks: circleci/aws-eks@1.1.0
 jobs:
   create-eks-cluster:
     executor: aws-eks/python3
@@ -59,7 +59,36 @@ jobs:
           command: |
             kubectl get services
             kubectl create deploy testing --image=shivai/prediction:latest
+            sleep 40
             kubectl get po
+
+    delete-capston-cluster:
+      executor: aws-eks/python3
+      steps:
+        - checkout
+        - aws-eks/install-aws-iam-authenticator:
+            release-tag: ''
+        - run:
+            name: Install the eksctl tool
+            command: |
+              if which eksctl > /dev/null; then
+                echo "eksctl is already installed"
+                exit 0
+              fi
+              mkdir -p eksctl_download
+              curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
+                | tar xz -C eksctl_download
+              chmod +x eksctl_download/eksctl
+              SUDO=""
+              if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
+                SUDO="sudo"
+              fi
+              $SUDO mv eksctl_download/eksctl /usr/local/bin/
+              rmdir eksctl_download
+        - aws-eks/delete-cluster:
+            cluster-name: capstone
+            aws-region: us-east-2
+            wait: true
 workflows:
   default:
     jobs:
@@ -68,6 +97,5 @@ workflows:
       - test-eks-cluster:
           cluster-name: capstone
           requires: [create-eks-cluster]
-      - aws-eks/delete-cluster:
-          cluster-name: capstone
-          requires: [test-eks-cluster]
+     - delete-capston-cluster:
+         requires: [test-eks-cluster]
