@@ -65,7 +65,7 @@ jobs:
             docker images
             dockerpath=/prediction
             docker login -u $DUSER -p $DPASS
-            docker tag prediction:latest-${CIRCLE_WORKFLOW_ID} shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
+            docker tag prediction shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
             echo "Docker ID and Image: $dockerpath"
             docker push shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
   # create-eks-cluster:
