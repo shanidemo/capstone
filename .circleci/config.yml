@@ -65,9 +65,9 @@ jobs:
             docker images
             dockerpath=/prediction
             docker login -u $DUSER -p $DPASS
-            docker tag prediction shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
+            docker tag prediction:latest shivai/prediction:latest
             echo "Docker ID and Image: $dockerpath"
-            docker push shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
+            docker push shivai/prediction:latest
   # create-eks-cluster:
   #   executor: aws-eks/python3
   #   parameters:
@@ -141,7 +141,7 @@ jobs:
           command: |
             pwd
             ls -lha
-            bash /home/circleci/project/BlueGreen.sh ${CIRCLE_WORKFLOW_ID}
+            bash /home/circleci/project/BlueGreen.sh
             ls -l
             sleep 30
             kubectl get svc service-loadbalancer

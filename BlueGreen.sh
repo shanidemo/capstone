@@ -36,7 +36,7 @@ if [[ $? -eq 0 ]]; then
       kubectl scale deployment/prediction-blue --replicas=1
     else
       echo deployment blu is not present
-      kubectl create deployment prediction-blue --image=shivai/prediction:latest-$1
+      kubectl create deployment prediction-blue --image=shivai/prediction:latest
     fi
 cat >> loadbalancer.yaml <<-EOF
 apiVersion: v1
@@ -61,7 +61,7 @@ EOF
       kubectl scale deployment/prediction-green --replicas=1
     else
       echo po green is not present
-      kubectl create deployment prediction-green --image=shivai/prediction:latest-$1
+      kubectl create deployment prediction-green --image=shivai/prediction:latest
     fi
   fi
 cat >> loadbalancer.yaml <<-EOF
@@ -81,7 +81,7 @@ EOF
   kubectl apply -f loadbalancer.yaml
 else
   echo there is no deployment
-  kubectl create deployment prediction-blue --image=shivai/prediction:latest-$1
+  kubectl create deployment prediction-blue --image=shivai/prediction:latest
 cat >> loadbalancer.yaml <<-EOF
 apiVersion: v1
 kind: Service
