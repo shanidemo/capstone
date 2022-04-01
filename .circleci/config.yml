@@ -37,6 +37,46 @@ commands:
           wait: true
             
 jobs:
+  preBuild:
+    docker:
+      # Use  the same Docker base as the project
+      - image: python:3.7.3-stretch
+      working_directory: ~/repo
+
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+            # Install hadolint
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
+            chmod +x /bin/hadolint
+            make lint
+      - save_cache:
+          paths:
+          - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+  build:
+    - checkout
+    - run:
+        name: build image
+        command: |
+          docker build -t prediction .
+          docker images
+          dockerpath=/prediction
+          docker login -u $DUSER -p $DPASS
+          docker tag prediction:latest-${CIRCLE_WORKFLOW_ID} shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
+          echo "Docker ID and Image: $dockerpath"
+          docker push shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
   # create-eks-cluster:
   #   executor: aws-eks/python3
   #   parameters:
@@ -110,7 +150,7 @@ jobs:
           command: |
             pwd
             ls -lha
-            bash /home/circleci/project/BlueGreen.sh
+            bash /home/circleci/project/BlueGreen.sh ${CIRCLE_WORKFLOW_ID}
             ls -l
             sleep 30
             kubectl get svc service-loadbalancer
@@ -137,8 +177,9 @@ jobs:
               exit 0
             fi
             mkdir -p eksctl_download
-            curl --silent -L --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" \
-              | tar xz -C eksctl_download
+            # curl --silent -L --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" \
+            #   | tar xz -C eksctl_download
+            curl -L "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" | tar xz -C eksctl_download
             chmod +x eksctl_download/eksctl
             SUDO=""
             if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
@@ -164,10 +205,13 @@ workflows:
   default:
     jobs:
       # - test
+      - preBuild
+      - build:
+          requiures: [preBuild]
       # - create-eks-cluster:
+      # #     cluster-name: capstone
+      # - test-eks-cluster:
       #     cluster-name: capstone
-      - test-eks-cluster:
-          cluster-name: capstone
           # requires: [create-eks-cluster]
       - deploy-app:
           cluster-name: capstone

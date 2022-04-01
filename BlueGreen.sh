@@ -2,10 +2,10 @@
 
 function checkenv
 {
-if [[ $(kubectl get po --selector="app=testing-green") ]]
+if [[ $(kubectl get po --selector="app=prediction-green") ]]
 then
     return 0
-elif [[ $(kubectl get po --selector="app=testing-blue") ]]
+elif [[ $(kubectl get po --selector="app=prediction-blue") ]]
 then
     return 1
 else
@@ -16,7 +16,7 @@ fi
 function checkdeployment
 {
 
-  if [[ $(kubectl get deployment -l 'app in (testing-green, testing-blue)') ]]; then
+  if [[ $(kubectl get deployment -l 'app in (prediction-green, prediction-blue)') ]]; then
     echo deployment is here
     return 0
   else
@@ -30,13 +30,13 @@ if [[ $? -eq 0 ]]; then
   checkenv
   if [[ $? -eq 0 ]]; then
     echo green pod is present
-    kubectl scale deployment/testing-green --replicas=0
-    if [[ $(kubectl get deployment -l 'app=testing-blue') ]]; then
+    kubectl scale deployment/prediction-green --replicas=0
+    if [[ $(kubectl get deployment -l 'app=prediction-blue') ]]; then
       echo deploymnet blue is present
-      kubectl scale deployment/testing-blue --replicas=1
+      kubectl scale deployment/prediction-blue --replicas=1
     else
       echo deployment blu is not present
-      kubectl create deployment testing-blue --image=shivai/prediction:latest
+      kubectl create deployment prediction-blue --image=shivai/prediction:latest-$1
     fi
 cat >> loadbalancer.yaml <<-EOF
 apiVersion: v1
@@ -46,7 +46,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: testing-blue
+    app: prediction-blue
   ports:
     - protocol: TCP
       port: 80
@@ -55,13 +55,13 @@ EOF
     kubectl apply -f loadbalancer.yaml
   elif [[ $? -eq 1 ]]; then
     echo pod blue is present
-    kubectl scale deployment/testing-blue --replicas=0
-    if [[ $(kubectl get deployment -l 'app=testing-green') ]]; then
+    kubectl scale deployment/prediction-blue --replicas=0
+    if [[ $(kubectl get deployment -l 'app=prediction-green') ]]; then
       echo deployment green is present
-      kubectl scale deployment/testing-green --replicas=1
+      kubectl scale deployment/prediction-green --replicas=1
     else
       echo po green is not present
-      kubectl create deployment testing-green --image=shivai/prediction:latest
+      kubectl create deployment prediction-green --image=shivai/prediction:latest-$1
     fi
   fi
 cat >> loadbalancer.yaml <<-EOF
@@ -72,7 +72,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: testing-green
+    app: prediction-green
   ports:
     - protocol: TCP
       port: 80
@@ -81,7 +81,7 @@ EOF
   kubectl apply -f loadbalancer.yaml
 else
   echo there is no deployment
-  kubectl create deploy testing-blue --image=shivai/prediction:latest
+  kubectl create deployment prediction-blue --image=shivai/prediction:latest-$1
 cat >> loadbalancer.yaml <<-EOF
 apiVersion: v1
 kind: Service
@@ -90,7 +90,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: testing-blue
+    app: prediction-blue
   ports:
     - protocol: TCP
       port: 80
