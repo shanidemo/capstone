@@ -101,6 +101,7 @@ jobs:
           Name of the EKS cluster
         type: string
     steps:
+      - checkout
       - kubernetes/install
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: << parameters.cluster-name >>
@@ -161,13 +162,13 @@ workflows:
     jobs:
       # - test
       - create-eks-cluster:
-          cluster-name: shiva-capstone
+          cluster-name: capstone
       - test-eks-cluster:
-          cluster-name: shiva-capstone
+          cluster-name: capstone
           requires: [create-eks-cluster]
       - deploy-app:
-          cluster-name: shiva-capstone
+          cluster-name: capstone
           requires: [test-eks-cluster]
       - delete-capston-cluster:
-          cluster-name: shiva-capstone
+          cluster-name: capstone
           requires: [deploy-app]
