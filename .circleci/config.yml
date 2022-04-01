@@ -55,17 +55,18 @@ jobs:
   build:
     docker:
       - image: python:3.7.3-stretch
-    - checkout
-    - run:
-        name: build image
-        command: |
-          docker build -t prediction .
-          docker images
-          dockerpath=/prediction
-          docker login -u $DUSER -p $DPASS
-          docker tag prediction:latest-${CIRCLE_WORKFLOW_ID} shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
-          echo "Docker ID and Image: $dockerpath"
-          docker push shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
+    steps:
+      - checkout
+      - run:
+          name: build image
+          command: |
+            docker build -t prediction .
+            docker images
+            dockerpath=/prediction
+            docker login -u $DUSER -p $DPASS
+            docker tag prediction:latest-${CIRCLE_WORKFLOW_ID} shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
+            echo "Docker ID and Image: $dockerpath"
+            docker push shivai/prediction:latest-${CIRCLE_WORKFLOW_ID}
   # create-eks-cluster:
   #   executor: aws-eks/python3
   #   parameters:
