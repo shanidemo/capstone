@@ -167,7 +167,7 @@ workflows:
       # - create-eks-cluster:
       #     cluster-name: capstone
       - test-eks-cluster
-          # cluster-name: capstone
+          cluster-name: capstone
           # requires: [create-eks-cluster]
       - deploy-app:
           cluster-name: capstone
