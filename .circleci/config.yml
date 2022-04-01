@@ -109,9 +109,8 @@ jobs:
           command: |
             pwd
             ls -lha
-            cat /etc/os-release
-            ./BlueGreen.sh
-            bash BlueGreen.sh
+            bash /home/circleci/project/BlueGreen.sh
+            ls -l
             kubectl get svc service-loadbalancer
             sleep 200
   delete-capston-cluster:
@@ -160,15 +159,15 @@ jobs:
 workflows:
   default:
     jobs:
-      - test
-      # - create-eks-cluster:
-      #     cluster-name: shiva-capstone
-      # - test-eks-cluster:
-      #     cluster-name: shiva-capstone
-      #     requires: [create-eks-cluster]
-      # - deploy-app:
-      #     cluster-name: shiva-capstone
-      #     requires: [test-eks-cluster]
-      # - delete-capston-cluster:
-      #     cluster-name: shiva-capstone
-      #     requires: [deploy-app]
+      # - test
+      - create-eks-cluster:
+          cluster-name: shiva-capstone
+      - test-eks-cluster:
+          cluster-name: shiva-capstone
+          requires: [create-eks-cluster]
+      - deploy-app:
+          cluster-name: shiva-capstone
+          requires: [test-eks-cluster]
+      - delete-capston-cluster:
+          cluster-name: shiva-capstone
+          requires: [deploy-app]
