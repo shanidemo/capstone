@@ -53,14 +53,19 @@ jobs:
             chmod +x /bin/hadolint
             make lint
   build:
-    # docker:
-    #   - image: python:3.7.3-stretch
-    machine: true
+    docker:
+      - image: python:3.7.3-stretch
     steps:
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
       - checkout
       - run:
           name: build image
           command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
             docker build -t prediction .
             docker images
             dockerpath=/prediction
