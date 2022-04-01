@@ -98,4 +98,3 @@ spec:
 EOF
   kubectl apply -f loadbalancer.yaml
 fi
-kubectl get svc service-loadbalancer -o json | jq .status.loadBalancer.ingress[0].hostname
