@@ -205,7 +205,7 @@ workflows:
           # requires: [create-eks-cluster]
       - deploy-app:
           cluster-name: capstone
-          requires: [test-eks-cluster]
+          # requires: [test-eks-cluster]
       - delete-capston-cluster:
           cluster-name: capstone
           requires: [deploy-app]
