@@ -197,7 +197,7 @@ workflows:
       # - test
       - preBuild
       - build:
-          requiures: [preBuild]
+          requires: [preBuild]
       # - create-eks-cluster:
       # #     cluster-name: capstone
       # - test-eks-cluster:
