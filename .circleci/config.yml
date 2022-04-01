@@ -53,8 +53,9 @@ jobs:
             chmod +x /bin/hadolint
             make lint
   build:
-    docker:
-      - image: python:3.7.3-stretch
+    # docker:
+    #   - image: python:3.7.3-stretch
+    machine: true
     steps:
       - checkout
       - run:
@@ -205,7 +206,7 @@ workflows:
           # requires: [create-eks-cluster]
       - deploy-app:
           cluster-name: capstone
-          # requires: [test-eks-cluster]
+          requires: [build]
       - delete-capston-cluster:
           cluster-name: capstone
           requires: [deploy-app]
