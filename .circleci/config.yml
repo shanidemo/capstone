@@ -53,7 +53,6 @@ jobs:
             chmod +x /bin/hadolint
             make lint
   build:
-    # docker:
     #   - image: python:3.7.3-stretch
     docker:
       - image: cimg/python:3.7.13
