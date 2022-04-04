@@ -1,9 +1,0 @@
----
-  - name: copy backend files
-    become: yes
-    copy:
-      
-  - name: apply pod
-    become: yes
-    shell: |
-      ./deploy.sh

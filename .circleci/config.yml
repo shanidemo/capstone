@@ -4,38 +4,7 @@ orbs:
   docker: circleci/docker@2.0.1
   kubernetes: circleci/kubernetes@0.12.0
   aws-eks: circleci/aws-eks@1.1.0
-commands:
-  destroy-cluster:
-    description: Destroy EKS cluster
-    parameters:
-      cluster-name:
-        type: string
-    steps:
-      - checkout
-      - aws-eks/install-aws-iam-authenticator:
-          release-tag: ''
-      - run:
-          name: Install the eksctl tool
-          command: |
-            if which eksctl > /dev/null; then
-              echo "eksctl is already installed"
-              exit 0
-            fi
-            mkdir -p eksctl_download
-            curl --silent --location --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
-              | tar xz -C eksctl_download
-            chmod +x eksctl_download/eksctl
-            SUDO=""
-            if [ $(id -u) -ne 0 ] && which sudo > /dev/null ; then
-              SUDO="sudo"
-            fi
-            $SUDO mv eksctl_download/eksctl /usr/local/bin/
-            rmdir eksctl_download
-      - aws-eks/delete-cluster:
-          cluster-name: << parameters.cluster-name >>
-          aws-region: us-west-1
-          wait: true
-            
+           
 jobs:
   preBuild:
     docker:
@@ -53,7 +22,6 @@ jobs:
             chmod +x /bin/hadolint
             make lint
   build:
-    #   - image: python:3.7.3-stretch
     docker:
       - image: cimg/python:3.7.13
         auth:
@@ -113,11 +81,7 @@ jobs:
           node-type: t2.small
           nodes-max: 2
           ssh-access: false
-          ssh-public-key: 'ohio'
-      # - destroy-cluster:
-      #     cluster-name: shiva-capstone
-      #     when: on_fail
-
+          ssh-public-key: 'cal'
   test-eks-cluster:
     executor: aws-eks/python3
     parameters:
@@ -163,22 +127,20 @@ jobs:
       cluster-name:
         description: |
           Name of the EKS cluster
-        type: string    
+        type: string
     steps:
       - checkout
       - aws-eks/install-aws-iam-authenticator:
           release-tag: ''
       - run:
           name: Install the eksctl tool
-          when: on_fail
           command: |
             if which eksctl > /dev/null; then
               echo "eksctl is already installed"
               exit 0
             fi
             mkdir -p eksctl_download
-            # curl --silent -L --retry 5 "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" \
-            #   | tar xz -C eksctl_download
+            uname -s
             curl -L "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" | tar xz -C eksctl_download
             chmod +x eksctl_download/eksctl
             SUDO=""
@@ -186,37 +148,23 @@ jobs:
               SUDO="sudo"
             fi
             $SUDO mv eksctl_download/eksctl /usr/local/bin/
-            rmdir eksctl_download
+            rmdir eksctl_download  
       - aws-eks/delete-cluster:
           cluster-name: << parameters.cluster-name >>
-          aws-region: us-east-2
+          aws-region: us-west-1
           wait: true
-  test:
-    executor: aws-eks/python3
-    steps:
-      - checkout
-      - run:
-          command: |
-            pwd
-            ls -lha
-            bash /home/circleci/project/BlueGreen.sh
-            ls -lha
 workflows:
   default:
     jobs:
-      # - test
       - preBuild
       - build:
           requires: [preBuild]
-      - create-eks-cluster:
-          cluster-name: capstone
-          requires: [build]
-      # - test-eks-cluster:
+      # - create-eks-cluster:
       #     cluster-name: capstone
-          # requires: [create-eks-cluster]
+      #     requires: [build]
       - deploy-app:
           cluster-name: capstone
-          requires: [create-eks-cluster]
+          # requires: [create-eks-cluster]
       - delete-capston-cluster:
           cluster-name: capstone
           requires: [deploy-app]
