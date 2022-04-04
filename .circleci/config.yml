@@ -33,7 +33,7 @@ commands:
             rmdir eksctl_download
       - aws-eks/delete-cluster:
           cluster-name: << parameters.cluster-name >>
-          aws-region: us-east-2
+          aws-region: us-west-1
           wait: true
             
 jobs:
