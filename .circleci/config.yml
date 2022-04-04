@@ -148,7 +148,8 @@ jobs:
               SUDO="sudo"
             fi
             $SUDO mv eksctl_download/eksctl /usr/local/bin/
-            rmdir eksctl_download  
+            rmdir eksctl_download
+            # kubectl delete svc service-loadbalancer
       - aws-eks/delete-cluster:
           cluster-name: << parameters.cluster-name >>
           aws-region: us-west-1
@@ -159,12 +160,12 @@ workflows:
       - preBuild
       - build:
           requires: [preBuild]
-      # - create-eks-cluster:
-      #     cluster-name: capstone
-      #     requires: [build]
+      - create-eks-cluster:
+          cluster-name: capstone
+          requires: [build]
       - deploy-app:
           cluster-name: capstone
-          # requires: [create-eks-cluster]
+          requires: [create-eks-cluster]
       - delete-capston-cluster:
           cluster-name: capstone
           requires: [deploy-app]
