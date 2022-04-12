@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/shanidemo/capstone/tree/main.svg?style=svg)](https://circleci.com/gh/shanidemo/capstone/tree/main)
+github url: https://github.com/shanidemo/capstone
 ## Project Overview
 
 In this project, you will apply the skills you have acquired in this course to operationalize a Machine Learning Microservice API. 
